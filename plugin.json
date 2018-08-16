@@ -7,8 +7,8 @@
         "bundle_path": "webapp/dist/main.js"
     },
     "settings_schema": {
-        "header": "No configuration is needed to use the Walltime plugin",
-        "footer": "Made with love ❤️ from Mattermost, Inc.",
+        "header": "No configuration is needed to use the Walltime plugin.",
+        "footer": "Made with ❤️ from Mattermost, Inc.",
         "settings": []
     }
 }
