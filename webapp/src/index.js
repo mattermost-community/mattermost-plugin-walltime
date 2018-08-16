@@ -14,42 +14,39 @@ export default class Plugin {
             if (!postUser || !currentUser || postUser.id === currentUser.id) {
                 return message;
             }
-            const referenceDate = moment(post.create_at);
-            const parseResults = chrono.parse(message, referenceDate);
 
-            if (!parseResults.length) {
+            const nlpDateResults = chrono.parse(message, moment(post.create_at));
+
+            if (!nlpDateResults.length) {
                 return message;
             }
 
             let timezoneMessage = message;
-
             const currentUserTimezone = timeZoneForUser(currentUser);
             const posterTimezome = timeZoneForUser(postUser);
 
-            for (let i = 0, len = parseResults.length; i < len; i++) {
-                const parseResult = parseResults[i];
-                const parsedMessageEndDate = parseResult.end ? parseResult.end.date() : null;
-                const parsedText = parseResult.text;
+            for (let i = 0, len = nlpDateResults.length; i < len; i++) {
+                const nlpResult = nlpDateResults[i];
+                const endDate = nlpResult.end ? nlpResult.end.date() : null;
 
-                const parsedMessageStartDateAdjusted = dateAdjustedToTimezone(parseResult.start.date(), posterTimezome);
+                const adjustedStartDate = dateAdjustedToTimezone(nlpResult.start.date(), posterTimezome);
+                const adjustedEndDate = endDate ? dateAdjustedToTimezone(endDate, posterTimezome) : null;
 
-                let parsedMessageEndDateAdjusted;
-                if (parsedMessageEndDate) {
-                    parsedMessageEndDateAdjusted = dateAdjustedToTimezone(parsedMessageEndDate, posterTimezome);
-                }
-
-                const currentUserMessageStartDate = parsedMessageStartDateAdjusted.tz(currentUserTimezone);
-                if (!parsedMessageEndDateAdjusted) {
-                    timezoneMessage = `${timezoneMessage.replace(parsedText, `\`${parsedText}\` *(${currentUserMessageStartDate.format(DATE_FORMAT_WITH_ZONE)})*`)}`;
-                    continue;
-                }
-
-                const currentUserMessageEndDate = parsedMessageEndDateAdjusted.tz(currentUserTimezone);
-                if (currentUserMessageStartDate.isSame(currentUserMessageEndDate, 'day')) {
-                    timezoneMessage = `${timezoneMessage.replace(parsedText, `\`${parsedText}\``)} *(${currentUserMessageStartDate.format(DATE_FORMAT_NO_ZONE)} - ${currentUserMessageEndDate.format(TIME_FORMAT_WITH_ZONE)})*`;
+                let formattedDateDisplay;
+                const currentUserStartDate = adjustedStartDate.tz(currentUserTimezone);
+                if (adjustedEndDate) {
+                    const currentUserEndDate = adjustedEndDate.tz(currentUserTimezone);
+                    if (currentUserStartDate.isSame(currentUserEndDate, 'day')) {
+                        formattedDateDisplay = `${currentUserStartDate.format(DATE_FORMAT_NO_ZONE)} - ${currentUserEndDate.format(TIME_FORMAT_WITH_ZONE)}`;
+                    } else {
+                        formattedDateDisplay = `${currentUserStartDate.format(DATE_FORMAT_WITH_ZONE)} - ${currentUserEndDate.format(DATE_FORMAT_WITH_ZONE)}`;
+                    }
                 } else {
-                    timezoneMessage = `${timezoneMessage.replace(parsedText, `\`${parsedText}\``)} *(${currentUserMessageStartDate.format(DATE_FORMAT_WITH_ZONE)} - ${currentUserMessageEndDate.format(DATE_FORMAT_WITH_ZONE)})*`;
+                    formattedDateDisplay = currentUserStartDate.format(DATE_FORMAT_WITH_ZONE);
                 }
+
+                const {text} = nlpResult;
+                timezoneMessage = `${timezoneMessage.replace(text, `\`${text}\` *(${formattedDateDisplay})*`)}`;
             }
 
             return timezoneMessage;
