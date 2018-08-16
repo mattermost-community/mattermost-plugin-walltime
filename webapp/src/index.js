@@ -15,41 +15,41 @@ export default class Plugin {
                 return message;
             }
 
-            const nlpDateResults = chrono.parse(message, moment(post.create_at));
+            const nlpResults = chrono.parse(message, moment(post.create_at));
 
-            if (!nlpDateResults.length) {
+            if (!nlpResults.length) {
                 return message;
             }
 
-            let timezoneMessage = message;
+            let newMessage = message;
             const currentUserTimezone = timeZoneForUser(currentUser);
             const posterTimezome = timeZoneForUser(postUser);
 
-            for (let i = 0, len = nlpDateResults.length; i < len; i++) {
-                const nlpResult = nlpDateResults[i];
+            for (let i = 0, len = nlpResults.length; i < len; i++) {
+                const nlpResult = nlpResults[i];
                 const endDate = nlpResult.end ? nlpResult.end.date() : null;
 
                 const adjustedStartDate = dateAdjustedToTimezone(nlpResult.start.date(), posterTimezome);
                 const adjustedEndDate = endDate ? dateAdjustedToTimezone(endDate, posterTimezome) : null;
 
-                let formattedDateDisplay;
+                let formattedDisplayDate;
                 const currentUserStartDate = adjustedStartDate.tz(currentUserTimezone);
                 if (adjustedEndDate) {
                     const currentUserEndDate = adjustedEndDate.tz(currentUserTimezone);
                     if (currentUserStartDate.isSame(currentUserEndDate, 'day')) {
-                        formattedDateDisplay = `${currentUserStartDate.format(DATE_FORMAT_NO_ZONE)} - ${currentUserEndDate.format(TIME_FORMAT_WITH_ZONE)}`;
+                        formattedDisplayDate = `${currentUserStartDate.format(DATE_FORMAT_NO_ZONE)} - ${currentUserEndDate.format(TIME_FORMAT_WITH_ZONE)}`;
                     } else {
-                        formattedDateDisplay = `${currentUserStartDate.format(DATE_FORMAT_WITH_ZONE)} - ${currentUserEndDate.format(DATE_FORMAT_WITH_ZONE)}`;
+                        formattedDisplayDate = `${currentUserStartDate.format(DATE_FORMAT_WITH_ZONE)} - ${currentUserEndDate.format(DATE_FORMAT_WITH_ZONE)}`;
                     }
                 } else {
-                    formattedDateDisplay = currentUserStartDate.format(DATE_FORMAT_WITH_ZONE);
+                    formattedDisplayDate = currentUserStartDate.format(DATE_FORMAT_WITH_ZONE);
                 }
 
                 const {text} = nlpResult;
-                timezoneMessage = `${timezoneMessage.replace(text, `\`${text}\` *(${formattedDateDisplay})*`)}`;
+                newMessage = `${newMessage.replace(text, `\`${text}\` *(${formattedDisplayDate})*`)}`;
             }
 
-            return timezoneMessage;
+            return newMessage;
         });
     }
 }
