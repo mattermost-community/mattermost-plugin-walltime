@@ -3,6 +3,10 @@ import moment from 'moment-timezone';
 
 import PluginId from './plugin_id';
 
+const DATE_FORMAT_WITH_ZONE = 'LLLL z';
+const DATE_FORMAT_NO_ZONE = 'LLLL';
+const TIME_FORMAT_WITH_ZONE = 'LT z';
+
 export default class Plugin {
     // eslint-disable-next-line no-unused-vars
     initialize(registry, store) {
@@ -10,8 +14,6 @@ export default class Plugin {
             if (!postUser || !currentUser || postUser.id === currentUser.id) {
                 return message;
             }
-            const posterTimezome = timeZoneForUser(postUser);
-            const currentUserTimezone = timeZoneForUser(currentUser);
             const referenceDate = moment(post.create_at);
             const parseResults = chrono.parse(message, referenceDate);
 
@@ -21,40 +23,43 @@ export default class Plugin {
 
             let timezoneMessage = message;
 
-            parseResults.forEach((parseResult) => {
-                const parsedMessageStartDate = parseResult.start.date();
+            const currentUserTimezone = timeZoneForUser(currentUser);
+            const posterTimezome = timeZoneForUser(postUser);
 
+            for (let i = 0, len = parseResults.length; i < len; i++) {
+                const parseResult = parseResults[i];
                 const parsedMessageEndDate = parseResult.end ? parseResult.end.date() : null;
-
                 const parsedText = parseResult.text;
 
-                const parsedMessageStartDateMoment = moment(parsedMessageStartDate).subtract(-moment().utcOffset() + moment().tz(posterTimezome).utcOffset(), 'minutes');
+                const parsedMessageStartDateAdjusted = dateAdjustedToTimezone(parseResult.start.date(), posterTimezome);
 
-                let parsedMessageEndDateMoment;
+                let parsedMessageEndDateAdjusted;
                 if (parsedMessageEndDate) {
-                    parsedMessageEndDateMoment = moment(parsedMessageEndDate).subtract(-moment().utcOffset() + moment().tz(posterTimezome).utcOffset(), 'minutes');
+                    parsedMessageEndDateAdjusted = dateAdjustedToTimezone(parsedMessageEndDate, posterTimezome);
                 }
 
-                const currentUserMessageStartDate = parsedMessageStartDateMoment.tz(currentUserTimezone);
+                const currentUserMessageStartDate = parsedMessageStartDateAdjusted.tz(currentUserTimezone);
+                if (!parsedMessageEndDateAdjusted) {
+                    timezoneMessage = `${timezoneMessage.replace(parsedText, `\`${parsedText}\` *(${currentUserMessageStartDate.format(DATE_FORMAT_WITH_ZONE)})*`)}`;
+                    continue;
+                }
 
-                let currentUserMessageEndDate;
-                if (parsedMessageEndDateMoment) {
-                    currentUserMessageEndDate = parsedMessageEndDateMoment.tz(currentUserTimezone);
-
-                    if (currentUserMessageStartDate.isSame(currentUserMessageEndDate, 'day')) {
-                        timezoneMessage = `${timezoneMessage.replace(parsedText, `\`${parsedText}\``)} *(${currentUserMessageStartDate.format('LLLL')} - ${currentUserMessageEndDate.format('LT z')})*`;
-                    } else {
-                        timezoneMessage = `${timezoneMessage.replace(parsedText, `\`${parsedText}\``)} *(${currentUserMessageStartDate.format('LLLL z')} - ${currentUserMessageEndDate.format('LLLL z')})*`;
-                    }
+                const currentUserMessageEndDate = parsedMessageEndDateAdjusted.tz(currentUserTimezone);
+                if (currentUserMessageStartDate.isSame(currentUserMessageEndDate, 'day')) {
+                    timezoneMessage = `${timezoneMessage.replace(parsedText, `\`${parsedText}\``)} *(${currentUserMessageStartDate.format(DATE_FORMAT_NO_ZONE)} - ${currentUserMessageEndDate.format(TIME_FORMAT_WITH_ZONE)})*`;
                 } else {
-                    timezoneMessage = `${timezoneMessage.replace(parsedText, `\`${parsedText}\` *(${currentUserMessageStartDate.format('LLLL z')})*`)}`;
+                    timezoneMessage = `${timezoneMessage.replace(parsedText, `\`${parsedText}\``)} *(${currentUserMessageStartDate.format(DATE_FORMAT_WITH_ZONE)} - ${currentUserMessageEndDate.format(DATE_FORMAT_WITH_ZONE)})*`;
                 }
-            });
+            }
 
             return timezoneMessage;
         });
     }
 }
+
+const dateAdjustedToTimezone = (date, timezone) => {
+    return moment(date).subtract(-moment().utcOffset() + moment().tz(timezone).utcOffset(), 'minutes');
+};
 
 const timeZoneForUser = (user) => {
     let zone;
