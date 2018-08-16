@@ -23,14 +23,14 @@ export default class Plugin {
 
             let newMessage = message;
             const currentUserTimezone = timeZoneForUser(currentUser);
-            const posterTimezome = timeZoneForUser(postUser);
+            const posterTimezone = timeZoneForUser(postUser);
 
             for (let i = 0, len = nlpResults.length; i < len; i++) {
                 const nlpResult = nlpResults[i];
                 const endDate = nlpResult.end ? nlpResult.end.date() : null;
 
-                const adjustedStartDate = dateAdjustedToTimezone(nlpResult.start.date(), posterTimezome);
-                const adjustedEndDate = endDate ? dateAdjustedToTimezone(endDate, posterTimezome) : null;
+                const adjustedStartDate = dateAdjustedToTimezone(nlpResult.start.date(), posterTimezone);
+                const adjustedEndDate = endDate ? dateAdjustedToTimezone(endDate, posterTimezone) : null;
 
                 let formattedDisplayDate;
                 const currentUserStartDate = adjustedStartDate.tz(currentUserTimezone);
