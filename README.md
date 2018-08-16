@@ -1,47 +1,31 @@
-# Sample Plugin
+# Walltime Plugin
 
-This plugin serves as a starting point for writing a Mattermost plugin. Feel free to base your own plugin off this repository.
+This plugin convert a message that contains some kind of date/time and parse the date/time to show in the user timezone.
 
-## Getting Started
-Shallow clone the repository to a directory matching your plugin name:
-```
-git clone --depth 1 https://github.com/mattermost/mattermost-plugin-sample com.example.my-plugin
-```
 
-Edit `plugin.json` with your `id`, `name`, and `description`:
-```
-{
-    "id": "com.example.my-plugin",
-    "name": "My Plugin",
-    "description": "A plugin to enhance Mattermost."
-}
-```
+## Example
 
-Build your plugin:
-```
-make
-```
-
-This will produce a single plugin file (with support for multiple architectures) for upload to your Mattermost server:
+User in the timezone `America\Toronto` post the following message:
 
 ```
-dist/com.example.my-plugin.tar.gz
+Let's meet today at 10am
 ```
 
-There is a build target to automate deploying and enabling the plugin to your server, but it requires configuration and [http](https://httpie.org/) to be installed:
+A user in another timezone, ie. `Europe\Berlin` will see:
+
 ```
-export MM_SERVICESETTINGS_SITEURL=http://localhost:8065/
-export MM_ADMIN_USERNAME=admin
-export MM_ADMIN_PASSWORD=password
-make deploy
+Let's meet today at 10am (Thursday, August 16, 2018 4:00 PM CEST)
 ```
 
-Alternatively, if you are running your `mattermost-server` out of a sibling directory by the same name, use the `deploy` target alone to  unpack the files into the right directory. You will need to restart your server and manually enable your plugin.
+Another example:
 
-In production, deploy and upload your plugin via the [System Console](https://about.mattermost.com/default-plugin-uploads).
+```
+Let's meet today at noon
+```
 
-## Q&A
+the user reading the message in another timezone will see:
 
-### How do I make a server-only or web app-only plugin?
+```
+Let's meet today at noon (Thursday, August 16, 2018 7:00 AM CEST)
+```
 
-Simply delete the `server` or `webapp` folders and remove the corresponding sections from `plugin.json`. The build scripts will skip the missing portions automatically.
