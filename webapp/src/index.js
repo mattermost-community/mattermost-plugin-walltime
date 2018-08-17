@@ -3,15 +3,15 @@ import moment from 'moment-timezone';
 
 import PluginId from './plugin_id';
 
-const DATE_FORMAT_WITH_ZONE = 'LLLL z';
-const DATE_FORMAT_NO_ZONE = 'LLLL';
-const TIME_FORMAT_WITH_ZONE = 'LT z';
+let DATE_AND_TIME_FORMAT = 'ddd, MMM D LT';
+const ZONE_FORMAT = 'z';
+const TIME_FORMAT = 'LT';
 
 export default class Plugin {
     // eslint-disable-next-line no-unused-vars
     initialize(registry, store) {
         registry.registerMessageWillFormatHook((message, post, postUser, currentUser) => {
-            if (!postUser || !currentUser || postUser.id === currentUser.id) {
+            if (!postUser || !currentUser) {
                 return message;
             }
 
@@ -34,15 +34,21 @@ export default class Plugin {
 
                 let formattedDisplayDate;
                 const currentUserStartDate = adjustedStartDate.tz(currentUserTimezone);
+                if (!currentUserStartDate.isSame(moment(), 'year')) {
+                    DATE_AND_TIME_FORMAT = 'llll';
+                }
                 if (adjustedEndDate) {
                     const currentUserEndDate = adjustedEndDate.tz(currentUserTimezone);
+                    if (!currentUserEndDate.isSame(moment(), 'year')) {
+                        DATE_AND_TIME_FORMAT = 'llll';
+                    }
                     if (currentUserStartDate.isSame(currentUserEndDate, 'day')) {
-                        formattedDisplayDate = `${currentUserStartDate.format(DATE_FORMAT_NO_ZONE)} - ${currentUserEndDate.format(TIME_FORMAT_WITH_ZONE)}`;
+                        formattedDisplayDate = `${currentUserStartDate.format(DATE_AND_TIME_FORMAT)} - ${currentUserEndDate.format(TIME_FORMAT + ' ' + ZONE_FORMAT)}`;
                     } else {
-                        formattedDisplayDate = `${currentUserStartDate.format(DATE_FORMAT_WITH_ZONE)} - ${currentUserEndDate.format(DATE_FORMAT_WITH_ZONE)}`;
+                        formattedDisplayDate = `${currentUserStartDate.format(DATE_AND_TIME_FORMAT + ' ' + ZONE_FORMAT)} - ${currentUserEndDate.format(DATE_AND_TIME_FORMAT + ' ' + ZONE_FORMAT)}`;
                     }
                 } else {
-                    formattedDisplayDate = currentUserStartDate.format(DATE_FORMAT_WITH_ZONE);
+                    formattedDisplayDate = currentUserStartDate.format(DATE_AND_TIME_FORMAT + ' ' + ZONE_FORMAT);
                 }
 
                 const {text} = nlpResult;
