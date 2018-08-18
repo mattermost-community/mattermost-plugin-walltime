@@ -33,12 +33,14 @@ export default class Plugin {
                 const adjustedEndDate = endDate ? dateAdjustedToTimezone(endDate, posterTimezone) : null;
 
                 let formattedDisplayDate;
-                const currentUserStartDate = adjustedStartDate.tz(currentUserTimezone);
+                const  locale = window.navigator.userLanguage || window.navigator.language;
+                const currentUserStartDate = adjustedStartDate.tz(currentUserTimezone).locale(locale);
+                // currentUserStartDate = currentUserStartDate.locale('de');
                 if (!currentUserStartDate.isSame(moment(), 'year')) {
                     DATE_AND_TIME_FORMAT = 'llll';
                 }
                 if (adjustedEndDate) {
-                    const currentUserEndDate = adjustedEndDate.tz(currentUserTimezone);
+                    const currentUserEndDate = adjustedEndDate.tz(currentUserTimezone).locale(locale);
                     if (!currentUserEndDate.isSame(moment(), 'year')) {
                         DATE_AND_TIME_FORMAT = 'llll';
                     }
