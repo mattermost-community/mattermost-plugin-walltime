@@ -33,8 +33,7 @@ export default class Plugin {
                 const adjustedEndDate = endDate ? dateAdjustedToTimezone(endDate, posterTimezone) : null;
 
                 let formattedDisplayDate;
-                const  locale = window.navigator.userLanguage || window.navigator.language;
-                const currentUserStartDate = adjustedStartDate.tz(currentUserTimezone).locale(locale);
+                const currentUserStartDate = adjustedStartDate.tz(currentUserTimezone).locale(currentUser.locale);
                 // currentUserStartDate = currentUserStartDate.locale('de');
                 if (!currentUserStartDate.isSame(moment(), 'year')) {
                     DATE_AND_TIME_FORMAT = 'llll';
