@@ -42,6 +42,8 @@ __Requires Mattermost 5.2 or higher__
 
 ## Developing
 
+One time run `cd webapp && npm run pre-build` to get `mattermost-redux` working.
+
 Use `make dist` to build distributions of the plugin that you can upload to a Mattermost server.
 
 Use `make check-style` to check the style.
