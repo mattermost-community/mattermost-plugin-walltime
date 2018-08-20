@@ -12,7 +12,8 @@ const TIME_FORMAT = 'LT';
 export default class Plugin {
     // eslint-disable-next-line no-unused-vars
     initialize(registry, store) {
-        registry.registerMessageWillFormatHook((message, post) => {
+        registry.registerMessageWillFormatHook((post) => {
+            const {message} = post;
             const state = store.getState();
             const currentUser = getCurrentUser(state);
             const postUser = getUser(state, post.user_id);
