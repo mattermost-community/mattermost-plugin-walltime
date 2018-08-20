@@ -34,7 +34,6 @@ export default class Plugin {
 
                 let formattedDisplayDate;
                 const currentUserStartDate = adjustedStartDate.tz(currentUserTimezone).locale(currentUser.locale);
-                // currentUserStartDate = currentUserStartDate.locale('de');
                 if (!currentUserStartDate.isSame(moment(), 'year')) {
                     DATE_AND_TIME_FORMAT = 'llll';
                 }
