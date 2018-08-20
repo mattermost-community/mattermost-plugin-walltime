@@ -1,6 +1,8 @@
 import chrono from 'chrono-node';
 import moment from 'moment-timezone';
 
+import {getCurrentUser, getUser} from 'mattermost-redux/selectors/entities/users';
+
 import PluginId from './plugin_id';
 
 let DATE_AND_TIME_FORMAT = 'ddd, MMM D LT';
@@ -10,7 +12,11 @@ const TIME_FORMAT = 'LT';
 export default class Plugin {
     // eslint-disable-next-line no-unused-vars
     initialize(registry, store) {
-        registry.registerMessageWillFormatHook((message, post, postUser, currentUser) => {
+        registry.registerMessageWillFormatHook((message, post) => {
+            const state = store.getState();
+            const currentUser = getCurrentUser(state);
+            const postUser = getUser(state, post.user_id);
+
             if (!postUser || !currentUser) {
                 return message;
             }
@@ -33,7 +39,8 @@ export default class Plugin {
                 const adjustedEndDate = endDate ? dateAdjustedToTimezone(endDate, posterTimezone) : null;
 
                 let formattedDisplayDate;
-                const currentUserStartDate = adjustedStartDate.tz(currentUserTimezone).locale(currentUser.locale);
+                const {locale} = currentUser;
+                const currentUserStartDate = adjustedStartDate.tz(currentUserTimezone).locale(locale);
                 if (!currentUserStartDate.isSame(moment(), 'year')) {
                     DATE_AND_TIME_FORMAT = 'llll';
                 }

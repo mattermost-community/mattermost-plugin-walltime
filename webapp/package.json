@@ -4,6 +4,7 @@
   "description": "This plugin serves as a starting point for writing a Mattermost plugin.",
   "main": "src/index.js",
   "scripts": {
+    "pre-build": "cd node_modules/mattermost-redux && npm i && npm run build",
     "build": "webpack --mode=production",
     "lint": "eslint --ignore-pattern node_modules --ignore-pattern dist --ext .js --ext .jsx . --quiet",
     "fix": "eslint --ignore-pattern node_modules --ignore-pattern dist --ext .js --ext .jsx . --quiet --fix"
@@ -27,6 +28,7 @@
   },
   "dependencies": {
     "chrono-node": "^1.3.5",
+    "mattermost-redux": "github:mattermost/mattermost-redux#11902b0d530e5b3303e7fffe74ef8102d25a1893",
     "moment-timezone": "^0.5.21",
     "react": "16.4.1",
     "react-redux": "5.0.7",
