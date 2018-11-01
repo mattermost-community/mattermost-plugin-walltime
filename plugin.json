@@ -1,7 +1,7 @@
 {
     "id": "com.mattermost.walltime-plugin",
     "name": "Walltime Plugin",
-    "description": "This plugin convert the messages with dates/times to who is viewing timezone.",
+    "description": "This plugin converts the dates/times in messages to the recipient's local timezone.",
     "version": "0.1.0",
     "webapp": {
         "bundle_path": "webapp/dist/main.js"
