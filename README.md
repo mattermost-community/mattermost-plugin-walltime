@@ -1,4 +1,4 @@
-# Walltime Plugin
+# Walltime Plugin [![Build Status](https://travis-ci.org/mattermost/mattermost-plugin-walltime.svg?branch=master)](https://travis-ci.org/mattermost/mattermost-plugin-walltime)
 
 This plugin convert a message that contains some kind of date/time and parse the date/time to show in the user timezone.
 
