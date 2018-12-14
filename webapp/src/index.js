@@ -22,7 +22,7 @@ export default class Plugin {
                 return message;
             }
 
-            const nlpResults = chrono.parse(message, moment(post.create_at));
+            const nlpResults = chrono.parse(message, moment(post.create_at), {forwardDate: true});
 
             if (!nlpResults || !nlpResults.length) {
                 return message;
