@@ -24,20 +24,30 @@ export default class Plugin {
 
             const nlpResults = chrono.parse(message, moment(post.create_at));
 
-            if (!nlpResults.length) {
+            if (!nlpResults || !nlpResults.length) {
                 return message;
             }
 
             let newMessage = message;
             const currentUserTimezone = timeZoneForUser(currentUser);
-            const posterTimezone = timeZoneForUser(postUser);
 
             for (let i = 0, len = nlpResults.length; i < len; i++) {
                 const nlpResult = nlpResults[i];
-                const endDate = nlpResult.end ? nlpResult.end.date() : null;
 
-                const adjustedStartDate = dateAdjustedToTimezone(nlpResult.start.date(), posterTimezone);
-                const adjustedEndDate = endDate ? dateAdjustedToTimezone(endDate, posterTimezone) : null;
+                if (!nlpResult.tags.ENTimeExpressionParser || !nlpResult.tags.ExtractTimezoneAbbrRefiner) {
+                    continue;
+                }
+
+                const anchorTimezoneStart = nlpResult.start.knownValues.timezoneOffset;
+                let anchorTimezoneEnd = null;
+
+                const endDate = nlpResult.end ? nlpResult.end.date() : null;
+                if (endDate) {
+                    anchorTimezoneEnd = nlpResult.end.knownValues.timezoneOffset;
+                }
+
+                const adjustedStartDate = dateAdjustedToTimezone(nlpResult.start.date(), anchorTimezoneStart);
+                const adjustedEndDate = endDate ? dateAdjustedToTimezone(endDate, anchorTimezoneEnd) : null;
 
                 let formattedDisplayDate;
                 const {locale} = currentUser;
@@ -68,8 +78,8 @@ export default class Plugin {
     }
 }
 
-const dateAdjustedToTimezone = (date, timezone) => {
-    return moment(date).subtract(-moment().utcOffset() + moment().tz(timezone).utcOffset(), 'minutes');
+const dateAdjustedToTimezone = (date, offsetMinutes) => {
+    return moment(date).subtract(-moment().utcOffset() + offsetMinutes, 'minutes');
 };
 
 const timeZoneForUser = (user) => {
