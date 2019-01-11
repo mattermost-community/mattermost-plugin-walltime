@@ -2,7 +2,7 @@
     "id": "com.mattermost.walltime-plugin",
     "name": "Walltime Plugin",
     "description": "This plugin converts the dates/times in messages to the recipient's local timezone.",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "webapp": {
         "bundle_path": "webapp/dist/main.js"
     },
