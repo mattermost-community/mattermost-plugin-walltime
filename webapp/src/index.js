@@ -1,7 +1,7 @@
 import chrono from 'chrono-node';
 import moment from 'moment-timezone';
 
-import {getCurrentUser, getUser} from 'mattermost-redux/selectors/entities/users';
+import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 
 import PluginId from './plugin_id';
 
@@ -15,21 +15,25 @@ export default class Plugin {
         registry.registerMessageWillFormatHook((post) => {
             const {message} = post;
             const state = store.getState();
-            const currentUser = getCurrentUser(state);
-            const postUser = getUser(state, post.user_id);
 
-            if (!postUser || !currentUser) {
+            const currentUser = getCurrentUser(state);
+            if (!currentUser || !currentUser.locale) {
                 return message;
             }
 
-            const nlpResults = chrono.parse(message, moment(post.create_at), {forwardDate: true});
+            const {locale} = currentUser;
 
+            const nlpResults = chrono.parse(message, moment(post.create_at), {forwardDate: true});
             if (!nlpResults || !nlpResults.length) {
                 return message;
             }
 
-            let newMessage = message;
             const currentUserTimezone = timeZoneForUser(currentUser);
+            if (!currentUserTimezone) {
+                return message;
+            }
+
+            let newMessage = message;
 
             for (let i = 0, len = nlpResults.length; i < len; i++) {
                 const nlpResult = nlpResults[i];
@@ -39,24 +43,18 @@ export default class Plugin {
                 }
 
                 const anchorTimezoneStart = nlpResult.start.knownValues.timezoneOffset;
-                let anchorTimezoneEnd = null;
-
-                const endDate = nlpResult.end ? nlpResult.end.date() : null;
-                if (endDate) {
-                    anchorTimezoneEnd = nlpResult.end.knownValues.timezoneOffset;
+                if (!anchorTimezoneStart) {
+                    return message;
                 }
 
-                const adjustedStartDate = dateAdjustedToTimezone(nlpResult.start.date(), anchorTimezoneStart);
-                const adjustedEndDate = endDate ? dateAdjustedToTimezone(endDate, anchorTimezoneEnd) : null;
-
                 let formattedDisplayDate;
-                const {locale} = currentUser;
-                const currentUserStartDate = adjustedStartDate.tz(currentUserTimezone).locale(locale);
+
+                const currentUserStartDate = moment(nlpResult.start.date()).tz(currentUserTimezone).locale(locale);
                 if (!currentUserStartDate.isSame(moment(), 'year')) {
                     DATE_AND_TIME_FORMAT = 'llll';
                 }
-                if (adjustedEndDate) {
-                    const currentUserEndDate = adjustedEndDate.tz(currentUserTimezone).locale(locale);
+                if (nlpResult.end) {
+                    const currentUserEndDate = moment(nlpResult.end.date()).tz(currentUserTimezone).locale(locale);
                     if (!currentUserEndDate.isSame(moment(), 'year')) {
                         DATE_AND_TIME_FORMAT = 'llll';
                     }
@@ -77,10 +75,6 @@ export default class Plugin {
         });
     }
 }
-
-const dateAdjustedToTimezone = (date, offsetMinutes) => {
-    return moment(date).subtract(-moment().utcOffset() + offsetMinutes, 'minutes');
-};
 
 const timeZoneForUser = (user) => {
     let zone;
