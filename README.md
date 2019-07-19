@@ -1,6 +1,6 @@
 # Walltime Plugin ![CircleCI branch](https://img.shields.io/circleci/project/github/mattermost/mattermost-plugin-walltime/master.svg)
 
-This plugin convert a message that contains some kind of date/time and parse the date/time to show in the user timezone.
+Use the walltime plugin to detect timestamps and convert them to the user's own timezone. This plugin is currently in beta.
 
 
 ## Example
