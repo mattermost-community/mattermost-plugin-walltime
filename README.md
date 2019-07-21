@@ -1,17 +1,17 @@
 # Walltime Plugin ![CircleCI branch](https://img.shields.io/circleci/project/github/mattermost/mattermost-plugin-walltime/master.svg)
 
-This plugin convert a message that contains some kind of date/time and parse the date/time to show in the user timezone.
+This plugin converts messages that contain some kind of date/time and parse the date/time to show it in the user's own local timezone.  This can help when planning meetings across timezones.
 
 
 ## Example
 
-User in the timezone `America\Toronto` post the following message:
+User in the timezone `America\Toronto` posts the following message:
 
 ```
 Let's meet today at 10am EST
 ```
 
-A user in another timezone, ie. `Europe\Berlin` will see:
+A user in another timezone, ie. `Europe\Berlin` will then see:
 
 ```
 Let's meet today at 10am EST (Thursday, August 16, 2018 5:00 PM CEST)
