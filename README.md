@@ -1,4 +1,4 @@
-# Walltime Plugin ![CircleCI branch](https://img.shields.io/circleci/project/github/mattermost/mattermost-plugin-walltime/master.svg)
+# Walltime Plugin (Beta) ![CircleCI branch](https://img.shields.io/circleci/project/github/mattermost/mattermost-plugin-walltime/master.svg)
 
 Use the walltime plugin to detect timestamps and convert them to the user's own timezone. This plugin is currently in beta.
 
