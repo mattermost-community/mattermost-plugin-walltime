@@ -5,6 +5,11 @@ let DATE_AND_TIME_FORMAT = 'ddd, MMM D LT';
 const ZONE_FORMAT = 'z';
 const TIME_FORMAT = 'LT';
 
+// Disable zh-Hant support in the default chrono parser
+chrono.casual.parsers = chrono.casual.parsers.filter(parser => {
+    return !parser.constructor.name.startsWith('ZHHant');
+});
+
 export function convertTimesToLocal(message, messageCreationTime, localTimezone, locale) {
     const parsedTimes = chrono.parse(message, moment(messageCreationTime), {forwardDate: true});
     if (!parsedTimes || !parsedTimes.length) {
