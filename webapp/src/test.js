@@ -19,11 +19,11 @@ test('timezoneParsing', () => {
     const testCases = [
         {
             test: "The game is at 12pm UTC",
-            expected: "The game is `at 12pm UTC` *(Mon, Jan 19, 1970 1:00 PM BST)*",
+            expected: "The game is `at 12pm UTC` *(Mon, Aug 23, 2021 1:00 PM BST)*",
         },
     ];
 
     testCases.forEach((tc) => {
-        expect(convertTimesToLocal(tc.test, 1629738610, 'Europe/London', 'en')).toEqual(tc.expected);
+        expect(convertTimesToLocal(tc.test, 1629738610000, 'Europe/London', 'en')).toEqual(tc.expected);
     });
 });
