@@ -2,7 +2,6 @@ import {convertTimesToLocal} from './time';
 
 test('convertTimesToLocal', () => {
     const testCases = [
-
         // This is an incorrect test case that demonstrates the issue with this plugin. 10am ET is not 8am pacific time at the refrence time.
         // Additional tests shoudl be written if we find a solution to this.
         {
@@ -13,5 +12,18 @@ test('convertTimesToLocal', () => {
 
     testCases.forEach((tc) => {
         expect(convertTimesToLocal(tc.test, 1563387832493, 'America/Vancouver', 'en')).toEqual(tc.expected);
+    });
+});
+
+test('timezoneParsing', () => {
+    const testCases = [
+        {
+            test: "The game is at 12pm UTC",
+            expected: "The game is `at 12pm UTC` *(Mon, Jan 19, 1970 1:00 PM BST)*",
+        },
+    ];
+
+    testCases.forEach((tc) => {
+        expect(convertTimesToLocal(tc.test, 1629738610, 'Europe/London', 'en')).toEqual(tc.expected);
     });
 });
