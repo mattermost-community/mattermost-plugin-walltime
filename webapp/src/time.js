@@ -25,7 +25,7 @@ export function convertTimesToLocal(message, messageCreationTime, localTimezone,
         }
 
         const anchorTimezoneStart = parsedTime.start.knownValues.timezoneOffset;
-        if (!anchorTimezoneStart) {
+        if (anchorTimezoneStart === undefined) {
             return message;
         }
 
