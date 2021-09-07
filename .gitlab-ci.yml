@@ -1,0 +1,72 @@
+stages:
+  - lint
+  - build
+  - test
+  - deploy
+
+variables:
+  BUNDLE_NAME: "mattermost-plugin-walltime.tar.gz"
+
+lint:
+  stage: lint
+  image: golangci/golangci-lint
+  before_script:
+    - apt -y update
+    - apt -y install npm
+  script:
+    - make check-style
+
+server:
+  image: golang:1.16-bullseye
+  stage: build
+  before_script:
+    - apt -y update
+    - apt -y install npm
+  script:
+    - make server
+  artifacts:
+    paths:
+      - "server/dist/*"
+
+webapp:
+  image: golang:1.16-bullseye
+  stage: build
+  before_script:
+    - apt -y update
+    - apt -y install npm
+  script:
+    - make webapp
+  artifacts:
+    paths:
+      - "webapp/dist/*"
+
+bundle:
+  image: golang:1.16-bullseye
+  stage: test
+  dependencies:
+    - server
+    - webapp
+  before_script:
+    - apt -y update
+    - apt -y install npm
+  script:
+    - make test
+    - make bundle
+  artifacts:
+    paths:
+      - "dist/*.tar.gz"
+
+deploy-test:
+  stage: deploy
+  image: mattermost/mattermost-team-edition
+  needs:
+    - bundle
+  before_script:
+    - mmctl auth login https://test.chat.collabora.com/ --name deployment --access-token ${MATTERMOST_ACCESS_KEY_TEST}
+  script:
+    - mmctl plugin delete com.mattermost.walltime-plugin || true  # TODO: remove if-and-when https://github.com/mattermost/mmctl/issues/382 is provided
+    - mmctl plugin add dist/${BUNDLE_NAME}
+    - mmctl plugin enable com.mattermost.walltime-plugin # TODO: remove if-and-when https://github.com/mattermost/mmctl/issues/382 is provided
+  after_script:
+    - mmctl auth delete deployment
+  when: manual
