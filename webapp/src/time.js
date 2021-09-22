@@ -35,6 +35,8 @@ export function convertTimesToLocal(message, messageCreationTime, localTimezone,
         const currentUserStartDate = moment(parsedTime.start.date()).tz(localTimezone).locale(locale);
         if (!currentUserStartDate.isSame(moment(), 'year')) {
             renderingFormat = 'llll';
+        } else if (typeof parsedTime.start.knownValues.day === 'undefined' && typeof parsedTime.start.knownValues.weekday === 'undefined') {
+            renderingFormat = TIME_FORMAT;
         }
         if (parsedTime.end) {
             const currentUserEndDate = moment(parsedTime.end.date()).tz(localTimezone).locale(locale);
