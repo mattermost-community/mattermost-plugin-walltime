@@ -20,7 +20,7 @@ test('timezoneParsing', () => {
     const testCases = [
         {
             test: 'The game is at 12pm UTC',
-            expected: 'The game is `at 12pm UTC` *(Mon, Aug 23, 2021 1:00 PM BST)*',
+            expected: 'The game is `at 12pm UTC` *(Mon, Aug 23 1:00 PM BST)*',
         },
     ];
 
