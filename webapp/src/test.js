@@ -22,6 +22,10 @@ test('timezoneParsing', () => {
             test: 'The game is at 12pm UTC',
             expected: 'The game is `at 12pm UTC` *(Mon, Aug 23, 2021 1:00 PM BST)*',
         },
+        {
+            test: 'Meeting scheduled for 10am GMT+2',
+            expected: 'Meeting scheduled for `10am GMT+2` *(Mon, Aug 23, 2021 9:00 AM BST)*',
+        },
     ];
 
     testCases.forEach((tc) => {
