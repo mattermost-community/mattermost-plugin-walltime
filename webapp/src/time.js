@@ -11,7 +11,7 @@ chrono.casual.parsers = chrono.casual.parsers.filter((parser) => {
 });
 
 export function convertTimesToLocal(message, messageCreationTime, localTimezone, locale) {
-    const parsedTimes = chrono.parse(message, new Date(messageCreationTime), {forwardDate: true});
+    const parsedTimes = chrono.en.parse(message, new Date(messageCreationTime), {forwardDate: true});
     if (!parsedTimes || !parsedTimes.length) {
         return message;
     }
@@ -19,10 +19,6 @@ export function convertTimesToLocal(message, messageCreationTime, localTimezone,
 
     for (let i = 0, len = parsedTimes.length; i < len; i++) {
         const parsedTime = parsedTimes[i];
-
-        if (!parsedTime.tags.ENTimeExpressionParser || !parsedTime.tags.ExtractTimezoneAbbrRefiner) {
-            continue;
-        }
 
         const anchorTimezoneStart = parsedTime.start.knownValues.timezoneOffset;
         if (typeof anchorTimezoneStart === 'undefined') {
