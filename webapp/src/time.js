@@ -1,5 +1,5 @@
-import chrono from 'chrono-node';
-import moment from 'moment-timezone';
+const chrono = require('chrono-node');
+const moment = require('moment-timezone');
 
 let DATE_AND_TIME_FORMAT = 'ddd, MMM D LT';
 const ZONE_FORMAT = 'z';
