@@ -11,7 +11,7 @@ chrono.casual.parsers = chrono.casual.parsers.filter((parser) => {
 });
 
 export function convertTimesToLocal(message, messageCreationTime, localTimezone, locale) {
-    const parsedTimes = chrono.parse(message, moment(messageCreationTime), {forwardDate: true});
+    const parsedTimes = chrono.parse(message, new Date(messageCreationTime), {forwardDate: true});
     if (!parsedTimes || !parsedTimes.length) {
         return message;
     }
