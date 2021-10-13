@@ -38,6 +38,12 @@ test('timezoneParsing', () => {
             test: 'tomorrow at 1pm',
             expected: 'tomorrow at 1pm',
         },
+
+        // Mentioning a weekday name should, by default, refer to the next occurrence of that weekday
+        {
+            test: 'Sunday at 4pm GMT',
+            expected: '`Sunday at 4pm GMT` *(Sun, Aug 29 5:00 PM BST)*',
+        },
     ];
 
     testCases.forEach((tc) => {
