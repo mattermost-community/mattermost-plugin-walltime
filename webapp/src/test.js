@@ -33,7 +33,7 @@ test('timezoneParsing', () => {
             expected: 'now that is surprising',
         },
 
-        // Messages where the source timezone should not be localized
+        // Messages where the source timezone is missing should not be localized
         {
             test: 'tomorrow at 1pm',
             expected: 'tomorrow at 1pm',
