@@ -26,11 +26,13 @@ test('timezoneParsing', () => {
             test: 'Meeting scheduled for 10am GMT+2',
             expected: 'Meeting scheduled for `10am GMT+2` *(Mon, Aug 23, 2021 9:00 AM BST)*',
         },
+
         // The word 'now' should not be rendered with a local time, although chrono-node can identify it as a time reference
         {
             test: 'now that is surprising',
             expected: 'now that is surprising',
         },
+
         // Messages where the source timezone should not be localized
         {
             test: 'tomorrow at 1pm',

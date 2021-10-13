@@ -25,7 +25,7 @@ export function convertTimesToLocal(message, messageCreationTime, localTimezone,
         const parsedTime = parsedTimes[i];
 
         // Workaround: remove the timezone offset when the word "now" is identified as a timestamp
-        if (parsedTime.text === "now") {
+        if (parsedTime.text === 'now') {
             delete parsedTime.start.knownValues.timezoneOffset;
         }
 
