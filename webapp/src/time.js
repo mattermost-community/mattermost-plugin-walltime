@@ -25,8 +25,7 @@ export function convertTimesToLocal(message, messageCreationTime, localTimezone,
             continue;
         }
 
-        const anchorTimezoneStart = parsedTime.start.knownValues.timezoneOffset;
-        if (typeof anchorTimezoneStart === 'undefined') {
+        if (!parsedTime.start.isCertain('timezoneOffset')) {
             return message;
         }
 
@@ -36,7 +35,7 @@ export function convertTimesToLocal(message, messageCreationTime, localTimezone,
         const currentUserStartDate = moment(parsedTime.start.date()).tz(localTimezone).locale(locale);
         if (!currentUserStartDate.isSame(moment(), 'year')) {
             renderingFormat = DATE_FORMAT;
-        } else if (typeof parsedTime.start.knownValues.day === 'undefined' && typeof parsedTime.start.knownValues.weekday === 'undefined') {
+        } else if (!parsedTime.start.isCertain('day') && !parsedTime.start.isCertain('weekday')) {
             renderingFormat = TIME_FORMAT;
         }
         if (parsedTime.end) {
