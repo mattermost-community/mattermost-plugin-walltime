@@ -4,6 +4,7 @@ import moment from 'moment-timezone';
 const DATE_AND_TIME_FORMAT = 'ddd, MMM D LT';
 const ZONE_FORMAT = 'z';
 const TIME_FORMAT = 'LT';
+const DATE_FORMAT = 'llll';
 
 // Disable zh-Hant support in the default chrono parser
 chrono.casual.parsers = chrono.casual.parsers.filter((parser) => {
@@ -34,14 +35,14 @@ export function convertTimesToLocal(message, messageCreationTime, localTimezone,
 
         const currentUserStartDate = moment(parsedTime.start.date()).tz(localTimezone).locale(locale);
         if (!currentUserStartDate.isSame(moment(), 'year')) {
-            renderingFormat = 'llll';
+            renderingFormat = DATE_FORMAT;
         } else if (typeof parsedTime.start.knownValues.day === 'undefined' && typeof parsedTime.start.knownValues.weekday === 'undefined') {
             renderingFormat = TIME_FORMAT;
         }
         if (parsedTime.end) {
             const currentUserEndDate = moment(parsedTime.end.date()).tz(localTimezone).locale(locale);
             if (!currentUserEndDate.isSame(moment(), 'year')) {
-                renderingFormat = 'llll';
+                renderingFormat = DATE_FORMAT;
             }
             if (currentUserStartDate.isSame(currentUserEndDate, 'day')) {
                 formattedDisplayDate = `${currentUserStartDate.format(renderingFormat)} - ${currentUserEndDate.format(TIME_FORMAT + ' ' + ZONE_FORMAT)}`;
