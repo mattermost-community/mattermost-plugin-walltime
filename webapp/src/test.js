@@ -42,7 +42,7 @@ test('timezoneParsing', () => {
         // Mentioning a weekday name should, by default, refer to the next occurrence of that weekday
         {
             test: 'Sunday at 4pm GMT',
-            expected: '`Sunday at 4pm GMT` *(Sun, Aug 29 5:00 PM BST)*',
+            expected: '`Sunday at 4pm GMT` *(Sun, Aug 29, 2021 5:00 PM BST)*',
         },
     ];
 
