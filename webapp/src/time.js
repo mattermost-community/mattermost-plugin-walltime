@@ -15,7 +15,7 @@ export function convertTimesToLocal(message, messageCreationTime, localTimezone,
     const parsedTimes = chrono.en.parse(message, referenceDate, {
         forwardDate: true,
         instant: referenceDate,
-        timezone: {},
+        timezone: null,
     });
     if (!parsedTimes || !parsedTimes.length) {
         return message;
