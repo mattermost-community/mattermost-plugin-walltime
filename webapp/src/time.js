@@ -10,6 +10,7 @@ chrono.casual.parsers = chrono.casual.parsers.filter((parser) => {
     return !parser.constructor.name.startsWith('ZHHant');
 });
 
+// Convert a chrono-node result into a timezone-offset-aware momentjs object
 function chronoToMoment(result) {
     return moment([
         result.get('year'),
