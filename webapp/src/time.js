@@ -34,6 +34,7 @@ export function convertTimesToLocal(message, messageCreationTime, localTimezone,
         const parsedTime = parsedTimes[i];
 
         // Workaround: remove the timezone offset when the word "now" is identified as a timestamp
+        // TODO: Unpick this once https://github.com/wanasit/chrono/pull/415 is merged and released
         if (parsedTime.text === 'now') {
             delete parsedTime.start.knownValues.timezoneOffset;
         }
