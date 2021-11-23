@@ -10,6 +10,18 @@ chrono.casual.parsers = chrono.casual.parsers.filter((parser) => {
     return !parser.constructor.name.startsWith('ZHHant');
 });
 
+function chronoToMoment(result) {
+    return moment([
+        result.get('year'),
+        result.get('month') - 1,
+        result.get('day'),
+        result.get('hour'),
+        result.get('minute'),
+        result.get('second'),
+        result.get('millisecond'),
+    ]).utcOffset(result.get('timezoneOffset'), true);
+}
+
 export function convertTimesToLocal(message, messageCreationTime, localTimezone, locale) {
     const referenceDate = new Date(messageCreationTime);
     const parsedTimes = chrono.en.parse(message, referenceDate, {
@@ -32,12 +44,12 @@ export function convertTimesToLocal(message, messageCreationTime, localTimezone,
 
         let formattedDisplayDate;
 
-        const currentUserStartDate = moment(parsedTime.start.date()).tz(localTimezone).locale(locale);
+        const currentUserStartDate = chronoToMoment(parsedTime.start).tz(localTimezone).locale(locale);
         if (!currentUserStartDate.isSame(moment(), 'year')) {
             DATE_AND_TIME_FORMAT = 'llll';
         }
         if (parsedTime.end) {
-            const currentUserEndDate = moment(parsedTime.end.date()).tz(localTimezone).locale(locale);
+            const currentUserEndDate = chronoToMoment(parsedTime.end).tz(localTimezone).locale(locale);
             if (!currentUserEndDate.isSame(moment(), 'year')) {
                 DATE_AND_TIME_FORMAT = 'llll';
             }
