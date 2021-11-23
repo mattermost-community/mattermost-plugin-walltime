@@ -23,11 +23,8 @@ function chronoToMoment(result) {
 }
 
 export function convertTimesToLocal(message, messageCreationTime, localTimezone, locale) {
-    const parsedTimes = chrono.en.parse(message, {
-        forwardDate: true,
-        instant: messageCreationTime,
-        timezone: null,
-    });
+    const referenceDate = {instant: messageCreationTime, timezone: null};
+    const parsedTimes = chrono.en.parse(message, referenceDate, {forwardDate: true});
     if (!parsedTimes || !parsedTimes.length) {
         return message;
     }
