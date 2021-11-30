@@ -33,6 +33,12 @@ test('timezoneParsing', () => {
             expected: 'now that is surprising',
         },
 
+        // The word 'ah' should not be interpreted as a time interval
+        {
+            test: 'ah that is surprising',
+            expected: 'ah that is surprising',
+        },
+
         // Messages where the source timezone is missing should not be localized
         {
             test: 'tomorrow at 1pm',
