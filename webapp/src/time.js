@@ -1,5 +1,5 @@
-import chrono from 'chrono-node';
-import moment from 'moment-timezone';
+const chrono = require('chrono-node');
+const moment = require('moment-timezone');
 
 let DATE_AND_TIME_FORMAT = 'ddd, MMM D LT';
 const ZONE_FORMAT = 'z';
@@ -11,7 +11,8 @@ chrono.casual.parsers = chrono.casual.parsers.filter((parser) => {
 });
 
 export function convertTimesToLocal(message, messageCreationTime, localTimezone, locale) {
-    const parsedTimes = chrono.parse(message, moment(messageCreationTime), {forwardDate: true});
+    const referenceDate = {instant: messageCreationTime, timezone: null};
+    const parsedTimes = chrono.parse(message, referenceDate, {forwardDate: true});
     if (!parsedTimes || !parsedTimes.length) {
         return message;
     }
@@ -19,10 +20,6 @@ export function convertTimesToLocal(message, messageCreationTime, localTimezone,
 
     for (let i = 0, len = parsedTimes.length; i < len; i++) {
         const parsedTime = parsedTimes[i];
-
-        if (!parsedTime.tags.ENTimeExpressionParser || !parsedTime.tags.ExtractTimezoneAbbrRefiner) {
-            continue;
-        }
 
         const anchorTimezoneStart = parsedTime.start.knownValues.timezoneOffset;
         if (typeof anchorTimezoneStart === 'undefined') {

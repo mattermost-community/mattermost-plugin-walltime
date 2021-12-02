@@ -22,6 +22,34 @@ test('timezoneParsing', () => {
             test: 'The game is at 12pm UTC',
             expected: 'The game is `at 12pm UTC` *(Mon, Aug 23, 2021 1:00 PM BST)*',
         },
+        {
+            test: 'Meeting scheduled for 10am GMT+2',
+            expected: 'Meeting scheduled for `10am GMT+2` *(Mon, Aug 23, 2021 9:00 AM BST)*',
+        },
+
+        // The word 'now' should not be rendered with a local time, although chrono-node can identify it as a time reference
+        {
+            test: 'now that is surprising',
+            expected: 'now that is surprising',
+        },
+
+        // The word 'ah' should not be interpreted as a time interval
+        {
+            test: 'ah that is surprising',
+            expected: 'ah that is surprising',
+        },
+
+        // Messages where the source timezone is missing should not be localized
+        {
+            test: 'tomorrow at 1pm',
+            expected: 'tomorrow at 1pm',
+        },
+
+        // Mentioning a weekday name should, by default, refer to the next occurrence of that weekday
+        {
+            test: 'Sunday at 4pm GMT',
+            expected: '`Sunday at 4pm GMT` *(Sun, Aug 29, 2021 5:00 PM BST)*',
+        },
     ];
 
     testCases.forEach((tc) => {
