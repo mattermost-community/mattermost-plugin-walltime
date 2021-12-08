@@ -1,19 +1,20 @@
 const chrono = require('chrono-node');
 const moment = require('moment-timezone');
 
-const YEAR_DATE_AND_TIME_FORMAT = 'llll z';
-const DATE_AND_TIME_FORMAT = 'ddd, MMM D LT z';
-const TIME_FORMAT = 'LT z';
+const YEAR_DATE_AND_TIME_FORMAT = 'llll';
+const DATE_AND_TIME_FORMAT = 'ddd, MMM D LT';
+const TIME_FORMAT = 'LT';
 
 // Disable zh-Hant support in the default chrono parser
 chrono.casual.parsers = chrono.casual.parsers.filter((parser) => {
     return !parser.constructor.name.startsWith('ZHHant');
 });
 
-// Determine display formatting for a parsed time relative to an (optional) previous parsed time
-function relativeRenderingFormat(current, previous) {
-    const currentMoment = moment(current.date());
+// Determine display formatting for a parsed time relative to (optional) previous and next parsed times
+function relativeRenderingFormat(previous, current, next) {
     const previousMoment = previous ? moment(previous.date()) : moment();
+    const currentMoment = moment(current.date());
+    const nextMoment = next ? moment(next.date()) : moment();
 
     let format = YEAR_DATE_AND_TIME_FORMAT;
     if (currentMoment.isSame(previousMoment, 'year')) {
@@ -22,12 +23,21 @@ function relativeRenderingFormat(current, previous) {
     if (!current.isCertain('day') && !current.isCertain('weekday')) {
         format = TIME_FORMAT;
     }
+    // Edge case: if the UTC offset on the next timestamp in the range is different, include the timezone code
+    // This can happen if a time range crosses a daylight savings change
+    if (next && currentMoment.utcOffset() != nextMoment.utcOffset()) {
+        format += ' z';
+    }
+    // Include the timezone code on the last formatted timestamp
+    if (!next) {
+        format += ' z';
+    }
     return format;
 }
 
-// Render a parsed time relative to an (optional) previous parsed time
-function renderRelativeTimestamp(current, previous, localTimezone, locale) {
-    const renderingFormat = relativeRenderingFormat(current, previous);
+// Render a parsed time relative to (optional) relative parsed time
+function renderRelativeTimestamp(previous, current, next, localTimezone, locale) {
+    const renderingFormat = relativeRenderingFormat(previous, current, next);
     const renderMoment = moment(current.date()).tz(localTimezone).locale(locale);
     return renderMoment.format(renderingFormat);
 }
@@ -47,9 +57,9 @@ export function convertTimesToLocal(message, messageCreationTime, localTimezone,
             return message;
         }
 
-        let formattedDisplayDate = renderRelativeTimestamp(parsedTime.start, null, localTimezone, locale);
+        let formattedDisplayDate = renderRelativeTimestamp(null, parsedTime.start, parsedTime.end, localTimezone, locale);
         if (parsedTime.end) {
-            formattedDisplayDate += ' - ' + renderRelativeTimestamp(parsedTime.end, parsedTime.start, localTimezone, locale);
+            formattedDisplayDate += ' - ' + renderRelativeTimestamp(parsedTime.start, parsedTime.end, null, localTimezone, locale);
         }
 
         const {text} = parsedTime;
