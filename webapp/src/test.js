@@ -34,6 +34,10 @@ test('timezoneParsing', () => {
             test: 'Meeting scheduled for 10am GMT+2',
             expected: 'Meeting scheduled for `10am GMT+2` *(9:00 AM BST)*',
         },
+        {
+            test: 'Some time around for 5pm-6pm UTC',
+            expected: 'Some time around for `5pm-6pm UTC` *(6:00 PM - 7:00 PM BST)*',
+        },
 
         // The word 'now' should not be rendered with a local time, although chrono-node can identify it as a time reference
         {
