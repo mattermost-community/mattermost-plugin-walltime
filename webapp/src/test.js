@@ -64,3 +64,16 @@ test('timezoneParsing', () => {
         expect(convertTimesToLocal(tc.test, 1629738610000, 'Europe/London', 'en')).toEqual(tc.expected);
     });
 });
+
+test('crossDaylightSavings', () => {
+    const testCases = [
+        {
+            test: 'Today from 2pm - 7pm PDT',
+            expected: '`Today from 2pm - 7pm PDT` *(Sat, Oct 30 10:00 PM BST - Sun, Oct 31 2:00 AM GMT)*',
+        },
+    ];
+
+    testCases.forEach((tc) => {
+        expect(convertTimesToLocal(tc.test, 1635562800000, 'Europe/London', 'en')).toEqual(tc.expected);
+    });
+});
