@@ -23,11 +23,13 @@ function relativeRenderingFormat(previous, current, next) {
     if (!current.isCertain('day') && !current.isCertain('weekday')) {
         format = TIME_FORMAT;
     }
+
     // Edge case: if the UTC offset on the next timestamp in the range is different, include the timezone code
     // This can happen if a time range crosses a daylight savings change
-    if (next && currentMoment.utcOffset() != nextMoment.utcOffset()) {
+    if (next && currentMoment.utcOffset() !== nextMoment.utcOffset()) {
         format += ' z';
     }
+
     // Include the timezone code on the last formatted timestamp
     if (!next) {
         format += ' z';
