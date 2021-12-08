@@ -1,10 +1,9 @@
 const chrono = require('chrono-node');
 const moment = require('moment-timezone');
 
-const YEAR_DATE_AND_TIME_FORMAT = 'llll';
-const DATE_AND_TIME_FORMAT = 'ddd, MMM D LT';
-const ZONE_FORMAT = 'z';
-const TIME_FORMAT = 'LT';
+const YEAR_DATE_AND_TIME_FORMAT = 'llll z';
+const DATE_AND_TIME_FORMAT = 'ddd, MMM D LT z';
+const TIME_FORMAT = 'LT z';
 
 // Disable zh-Hant support in the default chrono parser
 chrono.casual.parsers = chrono.casual.parsers.filter((parser) => {
@@ -23,7 +22,7 @@ function relativeRenderingFormat(current, previous) {
     if (!current.isCertain('day') && !current.isCertain('weekday')) {
         format = TIME_FORMAT;
     }
-    return format + ' ' + ZONE_FORMAT;
+    return format;
 }
 
 // Render a parsed time relative to an (optional) previous parsed time
