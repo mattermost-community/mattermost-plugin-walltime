@@ -50,11 +50,10 @@ export function convertTimesToLocal(message, messageCreationTime, localTimezone,
     if (!parsedTimes || !parsedTimes.length) {
         return message;
     }
-    let newMessage = message;
+    let localizedMessage = message;
 
     for (let i = 0, len = parsedTimes.length; i < len; i++) {
         const parsedTime = parsedTimes[i];
-
         if (!parsedTime.start.isCertain('timezoneOffset')) {
             return message;
         }
@@ -63,10 +62,7 @@ export function convertTimesToLocal(message, messageCreationTime, localTimezone,
         if (parsedTime.end) {
             formattedDisplayDate += ' - ' + renderRelativeTimestamp(parsedTime.start, parsedTime.end, null, localTimezone, locale);
         }
-
-        const {text} = parsedTime;
-        newMessage = `${newMessage.replace(text, `\`${text}\` *(${formattedDisplayDate})*`)}`;
+        localizedMessage = localizedMessage.replace(parsedTime.text, `\`${parsedTime.text}\` *(${formattedDisplayDate})*`);
     }
-
-    return newMessage;
+    return localizedMessage;
 }
