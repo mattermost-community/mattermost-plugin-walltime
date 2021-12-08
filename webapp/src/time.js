@@ -23,10 +23,7 @@ function relativeRenderingFormat(current, previous) {
     if (!current.isCertain('day') && !current.isCertain('weekday')) {
         format = TIME_FORMAT;
     }
-    if (!currentMoment.isSame(previousMoment, 'day')) {
-        format = format + ' ' + ZONE_FORMAT;
-    }
-    return format;
+    return format + ' ' + ZONE_FORMAT;
 }
 
 // Render a parsed time relative to an (optional) previous parsed time
