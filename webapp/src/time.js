@@ -26,12 +26,12 @@ function relativeRenderingFormat(previous, current, next) {
 
     // Edge case: if the UTC offset on the next timestamp in the range is different, include the timezone code
     // This can happen if a time range crosses a daylight savings change
-    if (next && currentMoment.utcOffset() !== nextMoment.utcOffset()) {
+    if (next !== null && currentMoment.utcOffset() !== nextMoment.utcOffset()) {
         format += ' z';
     }
 
     // Include the timezone code on the last formatted timestamp
-    if (!next) {
+    if (next === null) {
         format += ' z';
     }
     return format;
