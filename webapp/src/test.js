@@ -20,11 +20,19 @@ test('timezoneParsing', () => {
     const testCases = [
         {
             test: 'The game is at 12pm UTC',
-            expected: 'The game is `at 12pm UTC` *(Mon, Aug 23, 2021 1:00 PM BST)*',
+            expected: 'The game is `at 12pm UTC` *(1:00 PM BST)*',
+        },
+        {
+            test: 'Last deploy is Thursday at 11:59pm UTC',
+            expected: 'Last deploy is `Thursday at 11:59pm UTC` *(Fri, Aug 27 12:59 AM BST)*',
+        },
+        {
+            test: 'Last deploy is at 11:59pm UTC',
+            expected: 'Last deploy is `at 11:59pm UTC` *(12:59 AM BST)*',
         },
         {
             test: 'Meeting scheduled for 10am GMT+2',
-            expected: 'Meeting scheduled for `10am GMT+2` *(Mon, Aug 23, 2021 9:00 AM BST)*',
+            expected: 'Meeting scheduled for `10am GMT+2` *(9:00 AM BST)*',
         },
 
         // The word 'now' should not be rendered with a local time, although chrono-node can identify it as a time reference
@@ -48,7 +56,7 @@ test('timezoneParsing', () => {
         // Mentioning a weekday name should, by default, refer to the next occurrence of that weekday
         {
             test: 'Sunday at 4pm GMT',
-            expected: '`Sunday at 4pm GMT` *(Sun, Aug 29, 2021 5:00 PM BST)*',
+            expected: '`Sunday at 4pm GMT` *(Sun, Aug 29 5:00 PM BST)*',
         },
     ];
 

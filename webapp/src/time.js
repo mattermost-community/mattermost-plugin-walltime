@@ -1,9 +1,10 @@
 const chrono = require('chrono-node');
 const moment = require('moment-timezone');
 
-let DATE_AND_TIME_FORMAT = 'ddd, MMM D LT';
+const DATE_AND_TIME_FORMAT = 'ddd, MMM D LT';
 const ZONE_FORMAT = 'z';
 const TIME_FORMAT = 'LT';
+const DATE_FORMAT = 'llll';
 
 // Disable zh-Hant support in the default chrono parser
 chrono.casual.parsers = chrono.casual.parsers.filter((parser) => {
@@ -21,29 +22,31 @@ export function convertTimesToLocal(message, messageCreationTime, localTimezone,
     for (let i = 0, len = parsedTimes.length; i < len; i++) {
         const parsedTime = parsedTimes[i];
 
-        const anchorTimezoneStart = parsedTime.start.knownValues.timezoneOffset;
-        if (typeof anchorTimezoneStart === 'undefined') {
+        if (!parsedTime.start.isCertain('timezoneOffset')) {
             return message;
         }
 
+        let renderingFormat = DATE_AND_TIME_FORMAT;
         let formattedDisplayDate;
 
         const currentUserStartDate = moment(parsedTime.start.date()).tz(localTimezone).locale(locale);
         if (!currentUserStartDate.isSame(moment(), 'year')) {
-            DATE_AND_TIME_FORMAT = 'llll';
+            renderingFormat = DATE_FORMAT;
+        } else if (!parsedTime.start.isCertain('day') && !parsedTime.start.isCertain('weekday')) {
+            renderingFormat = TIME_FORMAT;
         }
         if (parsedTime.end) {
             const currentUserEndDate = moment(parsedTime.end.date()).tz(localTimezone).locale(locale);
             if (!currentUserEndDate.isSame(moment(), 'year')) {
-                DATE_AND_TIME_FORMAT = 'llll';
+                renderingFormat = DATE_FORMAT;
             }
             if (currentUserStartDate.isSame(currentUserEndDate, 'day')) {
-                formattedDisplayDate = `${currentUserStartDate.format(DATE_AND_TIME_FORMAT)} - ${currentUserEndDate.format(TIME_FORMAT + ' ' + ZONE_FORMAT)}`;
+                formattedDisplayDate = `${currentUserStartDate.format(renderingFormat)} - ${currentUserEndDate.format(TIME_FORMAT + ' ' + ZONE_FORMAT)}`;
             } else {
-                formattedDisplayDate = `${currentUserStartDate.format(DATE_AND_TIME_FORMAT + ' ' + ZONE_FORMAT)} - ${currentUserEndDate.format(DATE_AND_TIME_FORMAT + ' ' + ZONE_FORMAT)}`;
+                formattedDisplayDate = `${currentUserStartDate.format(renderingFormat + ' ' + ZONE_FORMAT)} - ${currentUserEndDate.format(renderingFormat + ' ' + ZONE_FORMAT)}`;
             }
         } else {
-            formattedDisplayDate = currentUserStartDate.format(DATE_AND_TIME_FORMAT + ' ' + ZONE_FORMAT);
+            formattedDisplayDate = currentUserStartDate.format(renderingFormat + ' ' + ZONE_FORMAT);
         }
 
         const {text} = parsedTime;
