@@ -16,8 +16,8 @@ test.each([
         test: "Let's meet today at 10am ET",
         expected: "Let's meet `today at 10am ET` *(Wed, Jul 17, 2019 8:00 AM PDT)*",
     },
-])('convertTimesToLocal', (tc) => {
-    expect(convertTimesToLocal(tc.test, 1563387832493, 'America/Vancouver', 'en')).toEqual(tc.expected);
+])('convertTimesToLocal: "$test"', ({test, expected}) => {
+    expect(convertTimesToLocal(test, 1563387832493, 'America/Vancouver', 'en')).toEqual(expected);
 });
 
 test.each([
@@ -66,11 +66,11 @@ test.each([
         test: 'Sunday at 4pm GMT',
         expected: '`Sunday at 4pm GMT` *(Sun, Aug 29 5:00 PM BST)*',
     },
-])('timezoneParsing', (tc) => {
+])('timezoneParsing: "$test"', ({now, test, expected}) => {
     // Some of the library's logic is currently not 'stable', because, for example, we call moment() without arguments
     // A few of our test cases are therefore pinned to specific points-in-time, pending temporal stability
-    if (tc.now) {
-        jest.setSystemTime(tc.now);
+    if (now) {
+        jest.setSystemTime(now);
     }
-    expect(convertTimesToLocal(tc.test, 1629738610000, 'Europe/London', 'en')).toEqual(tc.expected);
+    expect(convertTimesToLocal(test, 1629738610000, 'Europe/London', 'en')).toEqual(expected);
 });
