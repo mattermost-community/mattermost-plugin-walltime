@@ -64,3 +64,8 @@ test('timezoneParsing', () => {
         expect(convertTimesToLocal(tc.test, 1629738610000, 'Europe/London', 'en')).toEqual(tc.expected);
     });
 });
+
+test('ignorePreformattedBlocks', () => {
+    const input = 'The text inside ```this block mentions 8pm UTC``` but should not be localized';
+    expect(convertTimesToLocal(input, 1563387832493, 'Asia/Tokyo', 'en')).toEqual(input);
+});
