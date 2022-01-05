@@ -58,7 +58,7 @@ bundle:
 
 deploy-test:
   stage: deploy
-  image: mattermost/mattermost-team-edition
+  image: mattermost/mattermost-team-edition:release-6.2
   needs:
     - bundle
   before_script:
