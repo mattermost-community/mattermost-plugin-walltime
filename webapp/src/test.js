@@ -70,6 +70,11 @@ test('ignorePreformattedBlocks', () => {
     expect(convertTimesToLocal(input, 1563387832493, 'Asia/Tokyo', 'en')).toEqual(input);
 });
 
+test('ignoreMultilineCodeBlocks', () => {
+    const input = '```test\none\ntwo\nthree\n2pm GMT tomorrow\ntest\n```';
+    expect(convertTimesToLocal(input, 1563387832493, 'Asia/Tokyo', 'en')).toEqual(input);
+});
+
 test('ignoreHyperlinks', () => {
     const input = 'https://example.com/directory/test-2022-0900 is not a timestamp';
     expect(convertTimesToLocal(input, 1563387832493, 'Asia/Tokyo', 'en')).toEqual(input);
