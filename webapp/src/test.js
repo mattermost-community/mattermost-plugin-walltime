@@ -69,3 +69,8 @@ test('ignorePreformattedBlocks', () => {
     const input = 'The text inside ```this block mentions 8pm UTC``` but should not be localized';
     expect(convertTimesToLocal(input, 1563387832493, 'Asia/Tokyo', 'en')).toEqual(input);
 });
+
+test('ignoreHyperlinks', () => {
+    const input = 'https://example.com/directory/test-2022-0900 is not a timestamp';
+    expect(convertTimesToLocal(input, 1563387832493, 'Asia/Tokyo', 'en')).toEqual(input);
+});
