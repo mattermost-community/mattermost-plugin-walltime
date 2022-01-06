@@ -64,9 +64,7 @@ deploy-test:
   before_script:
     - mmctl auth login https://test.chat.collabora.com/ --name deployment --access-token ${MATTERMOST_ACCESS_KEY_TEST}
   script:
-    - mmctl plugin delete com.mattermost.walltime-plugin || true  # TODO: remove if-and-when https://github.com/mattermost/mmctl/issues/382 is provided
-    - mmctl plugin add dist/${BUNDLE_NAME}
-    - mmctl plugin enable com.mattermost.walltime-plugin # TODO: remove if-and-when https://github.com/mattermost/mmctl/issues/382 is provided
+    - mmctl plugin add --force dist/${BUNDLE_NAME}
   after_script:
     - mmctl auth delete deployment
   when: manual
