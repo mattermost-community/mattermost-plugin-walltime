@@ -62,7 +62,7 @@ deploy-test:
   needs:
     - bundle
   before_script:
-    - mmctl auth login ${MATTERMOST_TEST_URI} --name deployment --access-token ${MATTERMOST_ACCESS_KEY_TEST}
+    - mmctl auth login ${MATTERMOST_TEST_URI} --name deployment --access-token ${MATTERMOST_TEST_ACCESS_KEY}
   script:
     - mmctl plugin add --force dist/${BUNDLE_NAME}
   after_script:
