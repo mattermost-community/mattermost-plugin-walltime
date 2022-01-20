@@ -84,6 +84,7 @@ test('crossDaylightSavings', () => {
     ];
 
     testCases.forEach((tc) => {
+        jest.setSystemTime(new Date(1638965948000));
         expect(convertTimesToLocal(tc.test, 1635562800000, 'Europe/London', 'en')).toEqual(tc.expected);
     });
 });
