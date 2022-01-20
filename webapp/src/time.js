@@ -14,6 +14,7 @@ chrono.casual.parsers = chrono.casual.parsers.filter((parser) => {
 
 export function convertTimesToLocal(message, messageCreationTime, localTimezone, locale) {
     const filterRenderer = new marked.Renderer();
+    filterRenderer.blockquote = () => '';
     filterRenderer.code = () => '';
     filterRenderer.codespan = () => '';
     filterRenderer.link = () => '';

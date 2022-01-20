@@ -65,6 +65,11 @@ test('timezoneParsing', () => {
     });
 });
 
+test('ignoreBlockQuotes', () => {
+    const input = '> remind me at 5am GMT tomorrow please';
+    expect(convertTimesToLocal(input, 1563387832493, 'Europe/London', 'en')).toEqual(input);
+});
+
 test('ignorePreformattedBlocks', () => {
     const input = 'The text inside ```this block mentions 8pm UTC``` but should not be localized';
     expect(convertTimesToLocal(input, 1563387832493, 'Asia/Tokyo', 'en')).toEqual(input);
