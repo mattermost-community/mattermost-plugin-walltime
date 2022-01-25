@@ -91,7 +91,7 @@ test('crossDaylightSavings', () => {
 
 test('avoidTimezoneTokenAmbiguity', () => {
     const testCases = [
-        "People visiting Buñol towards the end of August get a good chance to participate in La Tomatina (under normal circumstances)",
+        'People visiting Buñol towards the end of August get a good chance to participate in La Tomatina (under normal circumstances)',
     ];
 
     testCases.forEach((input) => {
