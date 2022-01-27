@@ -9,19 +9,19 @@ variables:
 
 lint:
   stage: lint
-  image: golangci/golangci-lint
+  image: golangci/golangci-lint:v1.44-alpine
   before_script:
-    - apt -y update
-    - apt -y install npm
+    - apk update
+    - apk add gcompat libelf make npm
   script:
     - make check-style
 
 server:
-  image: golang:1.16-bullseye
+  image: golang:1.16-alpine
   stage: build
   before_script:
-    - apt -y update
-    - apt -y install npm
+    - apk update
+    - apk add gcompat libelf make npm
   script:
     - make server
   artifacts:
@@ -29,11 +29,11 @@ server:
       - "server/dist/*"
 
 webapp:
-  image: golang:1.16-bullseye
+  image: golang:1.16-alpine
   stage: build
   before_script:
-    - apt -y update
-    - apt -y install npm
+    - apk update
+    - apk add gcompat libelf make npm
   script:
     - make webapp
   artifacts:
@@ -41,14 +41,14 @@ webapp:
       - "webapp/dist/*"
 
 bundle:
-  image: golang:1.16-bullseye
+  image: golang:1.16-alpine
   stage: test
   dependencies:
     - server
     - webapp
   before_script:
-    - apt -y update
-    - apt -y install npm
+    - apk update
+    - apk add gcompat libelf make npm
   script:
     - make test
     - make bundle
