@@ -32,10 +32,12 @@
   },
   "dependencies": {
     "chrono-node": "2.3.4",
+    "marked": "github:mattermost/marked#6ca9a6b3f4bdd35dbf58d06f5e53369791e05915",
     "mattermost-redux": "",
     "moment-timezone": "0.5.26",
     "react": "16.8.6",
     "react-redux": "5.0.7",
-    "redux": "4.0.4"
+    "redux": "4.0.4",
+    "xregexp": "5.1.0"
   }
 }

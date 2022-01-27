@@ -1,4 +1,5 @@
 const chrono = require('chrono-node');
+const marked = require('marked');
 const moment = require('moment-timezone');
 
 const DATE_AND_TIME_FORMAT = 'ddd, MMM D LT';
@@ -12,8 +13,16 @@ chrono.casual.parsers = chrono.casual.parsers.filter((parser) => {
 });
 
 export function convertTimesToLocal(message, messageCreationTime, localTimezone, locale) {
+    const filterRenderer = new marked.Renderer();
+    filterRenderer.blockquote = () => '';
+    filterRenderer.code = () => '';
+    filterRenderer.codespan = () => '';
+    filterRenderer.link = () => '';
+    filterRenderer.paragraph = (text) => text;
+    const filteredMessage = marked(message, {renderer: filterRenderer});
+
     const referenceDate = {instant: messageCreationTime, timezone: null};
-    const parsedTimes = chrono.parse(message, referenceDate, {forwardDate: true});
+    const parsedTimes = chrono.parse(filteredMessage, referenceDate, {forwardDate: true});
     if (!parsedTimes || !parsedTimes.length) {
         return message;
     }

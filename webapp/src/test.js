@@ -88,3 +88,23 @@ test('crossDaylightSavings', () => {
         expect(convertTimesToLocal(tc.test, 1635562800000, 'Europe/London', 'en')).toEqual(tc.expected);
     });
 });
+
+test('ignoreBlockQuotes', () => {
+    const input = '> remind me at 5am GMT tomorrow please';
+    expect(convertTimesToLocal(input, 1563387832493, 'Europe/London', 'en')).toEqual(input);
+});
+
+test('ignorePreformattedBlocks', () => {
+    const input = 'The text inside ```this block mentions 8pm UTC``` but should not be localized';
+    expect(convertTimesToLocal(input, 1563387832493, 'Asia/Tokyo', 'en')).toEqual(input);
+});
+
+test('ignoreMultilineCodeBlocks', () => {
+    const input = '```test\none\ntwo\nthree\n2pm GMT tomorrow\ntest\n```';
+    expect(convertTimesToLocal(input, 1563387832493, 'Asia/Tokyo', 'en')).toEqual(input);
+});
+
+test('ignoreHyperlinks', () => {
+    const input = 'https://example.com/directory/test-2022-0900 is not a timestamp';
+    expect(convertTimesToLocal(input, 1563387832493, 'Asia/Tokyo', 'en')).toEqual(input);
+});
