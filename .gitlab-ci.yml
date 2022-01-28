@@ -1,0 +1,70 @@
+stages:
+  - lint
+  - build
+  - test
+  - deploy
+
+variables:
+  BUNDLE_NAME: "mattermost-plugin-walltime.tar.gz"
+
+lint:
+  stage: lint
+  image: golangci/golangci-lint:v1.44-alpine
+  before_script:
+    - apk update
+    - apk add gcompat libelf make npm
+  script:
+    - make check-style
+
+server:
+  image: golang:1.16-alpine
+  stage: build
+  before_script:
+    - apk update
+    - apk add gcompat libelf make npm
+  script:
+    - make server
+  artifacts:
+    paths:
+      - "server/dist/*"
+
+webapp:
+  image: golang:1.16-alpine
+  stage: build
+  before_script:
+    - apk update
+    - apk add gcompat libelf make npm
+  script:
+    - make webapp
+  artifacts:
+    paths:
+      - "webapp/dist/*"
+
+bundle:
+  image: golang:1.16-alpine
+  stage: test
+  dependencies:
+    - server
+    - webapp
+  before_script:
+    - apk update
+    - apk add gcompat libelf make npm
+  script:
+    - make test
+    - make bundle
+  artifacts:
+    paths:
+      - "dist/*.tar.gz"
+
+deploy-test:
+  stage: deploy
+  image: mattermost/mattermost-team-edition:release-6.2
+  needs:
+    - bundle
+  before_script:
+    - mmctl auth login ${MATTERMOST_TEST_URI} --name deployment --access-token ${MATTERMOST_TEST_ACCESS_KEY}
+  script:
+    - mmctl plugin add --force dist/${BUNDLE_NAME}
+  after_script:
+    - mmctl auth delete deployment
+  when: manual
