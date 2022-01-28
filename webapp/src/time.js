@@ -23,7 +23,7 @@ export function convertTimesToLocal(message, messageCreationTime, localTimezone,
         const parsedTime = parsedTimes[i];
 
         if (!parsedTime.start.isCertain('timezoneOffset')) {
-            return message;
+            continue;
         }
 
         let renderingFormat = DATE_AND_TIME_FORMAT;
