@@ -66,6 +66,12 @@ test.each([
         test: 'Sunday at 4pm GMT',
         expected: '`Sunday at 4pm GMT` *(Sun, Aug 29 5:00 PM BST)*',
     },
+
+    // Times should still be localized when another time duration is mentioned later in the sentence
+    {
+        test: 'Today at 16:30 CET and then we will take a 15 minute break',
+        expected: '`Today at 16:30 CET` *(Mon, Aug 23, 2021 4:30 PM BST)* and then we will take a 15 minute break',
+    },
 ])('timezoneParsing: "$test"', ({now, test, expected}) => {
     // Some of the library's logic is currently not 'stable', because, for example, we call moment() without arguments
     // A few of our test cases are therefore pinned to specific points-in-time, pending temporal stability
