@@ -26,10 +26,6 @@ export function convertTimesToLocal(message, messageCreationTime, localTimezone,
             return message;
         }
 
-        if (parsedTime.start.isCertain('month') && !parsedTime.start.isCertain('day')) {
-            return message;
-        }
-
         let renderingFormat = DATE_AND_TIME_FORMAT;
         let formattedDisplayDate;
 
