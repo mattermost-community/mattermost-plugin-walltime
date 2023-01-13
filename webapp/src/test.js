@@ -88,3 +88,13 @@ test('crossDaylightSavings', () => {
         expect(convertTimesToLocal(tc.test, 1635562800000, 'Europe/London', 'en')).toEqual(tc.expected);
     });
 });
+
+test('avoidTimezoneTokenAmbiguity', () => {
+    const testCases = [
+        'People visiting Buñol towards the end of August get a good chance to participate in La Tomatina (under normal circumstances)',
+    ];
+
+    testCases.forEach((input) => {
+        expect(convertTimesToLocal(input, 1642761512000, 'America/Vancouver', 'en')).toEqual(input);
+    });
+});
