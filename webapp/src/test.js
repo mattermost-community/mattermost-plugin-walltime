@@ -1,5 +1,9 @@
 import {convertTimesToLocal} from './time';
 
+function convertDateStringToEpoch(dateString) {
+    return new Date(dateString).getTime();
+}
+
 beforeEach(() => {
     jest.useFakeTimers();
 });
@@ -10,14 +14,14 @@ afterEach(() => {
 
 test.each([
 
-    // This is an incorrect test case that demonstrates the issue with this plugin. 10am ET is not 8am pacific time at the refrence time.
+    // This is an incorrect test case that demonstrates the issue with this plugin. 10am ET is not 8am pacific time at the reference time.
     // Additional tests shoudl be written if we find a solution to this.
     {
         test: "Let's meet today at 10am ET",
         expected: "Let's meet `today at 10am ET` *(Wed, Jul 17, 2019 8:00 AM PDT)*",
     },
 ])('convertTimesToLocal: "$test"', ({test, expected}) => {
-    expect(convertTimesToLocal(test, 1563387832493, 'America/Vancouver', 'en')).toEqual(expected);
+    expect(convertTimesToLocal(test, convertDateStringToEpoch('2019-07-17 18:23:52.493 +0000'), 'America/Vancouver', 'en')).toEqual(expected);
 });
 
 test.each([
@@ -78,7 +82,7 @@ test.each([
     if (now) {
         jest.setSystemTime(now);
     }
-    expect(convertTimesToLocal(test, 1629738610000, 'Europe/London', 'en')).toEqual(expected);
+    expect(convertTimesToLocal(test, convertDateStringToEpoch('2021-08-23 17:10:10 +0000'), 'Europe/London', 'en')).toEqual(expected);
 });
 
 test('crossDaylightSavings', () => {
@@ -90,8 +94,8 @@ test('crossDaylightSavings', () => {
     ];
 
     testCases.forEach((tc) => {
-        jest.setSystemTime(new Date(1638965948000));
-        expect(convertTimesToLocal(tc.test, 1635562800000, 'Europe/London', 'en')).toEqual(tc.expected);
+        jest.setSystemTime(new Date('2021-12-08 12:19:08 +0000'));
+        expect(convertTimesToLocal(tc.test, convertDateStringToEpoch('2021-10-30 08:00:56 -0700'), 'Europe/London', 'en')).toEqual(tc.expected);
     });
 });
 
@@ -101,6 +105,6 @@ test('avoidTimezoneTokenAmbiguity', () => {
     ];
 
     testCases.forEach((input) => {
-        expect(convertTimesToLocal(input, 1642761512000, 'America/Vancouver', 'en')).toEqual(input);
+        expect(convertTimesToLocal(input, convertDateStringToEpoch('2022-01-21 10:38:32 +0000'), 'America/Vancouver', 'en')).toEqual(input);
     });
 });
