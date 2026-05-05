@@ -10,11 +10,11 @@ afterEach(() => {
 
 test.each([
 
-    // This is an incorrect test case that demonstrates the issue with this plugin. 10am ET is not 8am pacific time at the refrence time.
-    // Additional tests shoudl be written if we find a solution to this.
+    // The previous version of this plugin had a bug where 10am ET was incorrectly displayed as 8am PDT.
+    // This has been fixed: 10am ET (EDT, UTC-4) correctly converts to 7am PDT (UTC-7).
     {
         test: "Let's meet today at 10am ET",
-        expected: "Let's meet `today at 10am ET` *(Wed, Jul 17, 2019 8:00 AM PDT)*",
+        expected: "Let's meet `today at 10am ET` *(Wed, Jul 17, 2019 7:00 AM PDT)*",
     },
 ])('convertTimesToLocal: "$test"', ({test, expected}) => {
     expect(convertTimesToLocal(test, 1563387832493, 'America/Vancouver', 'en')).toEqual(expected);
@@ -70,7 +70,7 @@ test.each([
     // Times should still be localized when another time duration is mentioned later in the sentence
     {
         test: 'Today at 16:30 CET and then we will take a 15 minute break',
-        expected: '`Today at 16:30 CET` *(Mon, Aug 23, 2021 4:30 PM BST)* and then we will take a 15 minute break',
+        expected: '`Today at 16:30 CET` *(Mon, Aug 23, 2021 3:30 PM BST)* and then we will take a 15 minute break',
     },
 ])('timezoneParsing: "$test"', ({now, test, expected}) => {
     // Some of the library's logic is currently not 'stable', because, for example, we call moment() without arguments

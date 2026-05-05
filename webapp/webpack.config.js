@@ -21,8 +21,7 @@ module.exports = {
                     loader: 'babel-loader',
                     options: {
                         plugins: [
-                            '@babel/plugin-proposal-class-properties',
-                            '@babel/plugin-syntax-dynamic-import',
+                            '@babel/plugin-transform-class-properties',
                         ],
                         presets: [
                             ['@babel/preset-env', {
@@ -34,7 +33,6 @@ module.exports = {
                                 },
                                 modules: false,
                                 debug: false,
-                                useBuiltIns: 'usage',
                                 shippedProposals: true,
                             }],
                             ['@babel/preset-react', {

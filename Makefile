@@ -74,10 +74,12 @@ endif
 ## Runs golint against all packages.
 .PHONY: golint
 golint:
+ifneq ($(HAS_SERVER),)
 	@echo Running lint
 	env GO111MODULE=off $(GO) get golang.org/x/lint/golint
 	$(GOPATH)/bin/golint -set_exit_status ./...
 	@echo lint success
+endif
 
 ## Builds the server, if it exists, including support for multiple architectures.
 .PHONY: server
