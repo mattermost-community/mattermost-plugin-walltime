@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "chrono-node": "2.3.9",
-    "mattermost-redux": "",
+    "mattermost-redux": "5.29.1",
     "moment-timezone": "0.5.26",
     "react": "16.8.6",
     "react-redux": "5.0.7",
