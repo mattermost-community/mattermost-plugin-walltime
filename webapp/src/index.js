@@ -1,4 +1,4 @@
-import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
+import {getCurrentUser, getUser} from 'mattermost-redux/selectors/entities/users';
 
 import PluginId from './plugin_id';
 
@@ -14,6 +14,15 @@ function timeZoneForUser(user) {
         zone = timezone.manualTimezone;
     }
     return zone;
+}
+
+function senderTimeZone(state, post) {
+    const sender = getUser(state, post.user_id);
+    if (!sender || !sender.timezone) {
+        return null;
+    }
+    const {timezone} = sender;
+    return (timezone.useAutomaticTimezone === 'true' ? timezone.automaticTimezone : timezone.manualTimezone) || null;
 }
 
 function getInfoForCurrentUser(store) {
@@ -46,7 +55,7 @@ function messageWillFormat(post, store) {
     }
     const {currentUserTimezone, currentUserLocale} = info;
 
-    return convertTimesToLocal(message, post.create_at, currentUserTimezone, currentUserLocale);
+    return convertTimesToLocal(message, post.create_at, currentUserTimezone, currentUserLocale, senderTimeZone(store.getState(), post));
 }
 
 export default class Plugin {

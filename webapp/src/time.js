@@ -11,8 +11,16 @@ chrono.casual.parsers = chrono.casual.parsers.filter((parser) => {
     return !parser.constructor.name.startsWith('ZHHant');
 });
 
-export function convertTimesToLocal(message, messageCreationTime, localTimezone, locale) {
-    const referenceDate = {instant: messageCreationTime, timezone: null};
+export function convertTimesToLocal(message, messageCreationTime, localTimezone, locale, senderTimezone) {
+    // chrono derives "today" etc. from the system-local wall clock, so shift the
+    // reference instant to show the sender's wall clock instead of the reader's
+    let instant = new Date(messageCreationTime);
+    if (senderTimezone && moment.tz.zone(senderTimezone)) {
+        const senderOffset = moment.tz(messageCreationTime, senderTimezone).utcOffset();
+        const systemOffset = -instant.getTimezoneOffset();
+        instant = new Date(messageCreationTime + ((senderOffset - systemOffset) * 60000));
+    }
+    const referenceDate = {instant, timezone: null};
     const parsedTimes = chrono.parse(message, referenceDate, {forwardDate: true});
     if (!parsedTimes || !parsedTimes.length) {
         return message;

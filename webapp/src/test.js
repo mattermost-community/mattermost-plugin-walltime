@@ -104,3 +104,10 @@ test('avoidTimezoneTokenAmbiguity', () => {
         expect(convertTimesToLocal(input, 1642761512000, 'America/Vancouver', 'en')).toEqual(input);
     });
 });
+
+test('relative days use the sender timezone', () => {
+    // 2026-10-28 23:00 UTC is already Oct 29 at 12:00 in UTC+13
+    const created = Date.UTC(2026, 9, 28, 23, 0);
+    const out = convertTimesToLocal('today at 5pm UTC', created, 'UTC', 'en', 'Pacific/Auckland');
+    expect(out).toContain('Thu, Oct 29');
+});
